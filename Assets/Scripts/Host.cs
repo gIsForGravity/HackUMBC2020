@@ -1,4 +1,6 @@
 ﻿using LiteNetLib;
+using LiteNetLib.Utils;
+using Packets;
 using UnityEngine;
 
 public class Host : MonoBehaviour
@@ -7,6 +9,8 @@ public class Host : MonoBehaviour
     public int Tick { get; private set; } = 0;
 
     NetManager netManager;
+    NetPacketProcessor packetProcessor;
+    NetDataWriter writer;
     EventBasedNetListener netListener;
 
     private void Awake()
@@ -18,24 +22,52 @@ public class Host : MonoBehaviour
     {
         Debug.LogError("starting host");
 
-        netManager = new NetManager(netListener);
-        netManager.Start(12345);
-
-        ticking = true;
-    }
-
-    private void Start()
-    {
         netListener = new EventBasedNetListener();
-        netListener.PeerConnectedEvent += (server) =>
+        netListener.PeerConnectedEvent += (client) =>
         {
-            Debug.LogError($"Connected to server: {server}");
+            Debug.LogError($"Connected to client: {client}");
+            Debug.LogError("Sending InitialTickPacket");
+            SendPacket(new InitialTickPacket { tick = Tick }, DeliveryMethod.ReliableUnordered);
         };
 
         netListener.ConnectionRequestEvent += (request) =>
         {
             request.Accept();
         };
+
+        netListener.NetworkReceiveEvent += (peer, reader, deliveryMethod) => 
+        {
+            packetProcessor.ReadAllPackets(reader);
+        };
+
+        packetProcessor = new NetPacketProcessor();
+        writer = new NetDataWriter();
+        PacketRegistrar.RegisterPackets(packetProcessor);
+
+        netManager = new NetManager(netListener);
+        netManager.Start(12345);
+
+        ticking = true;
+    }
+
+    public void SendPacket<T>(T packet, DeliveryMethod deliveryMethod) where T : class, Packet, new()
+    {
+        if (netManager != null)
+        {
+            writer.Reset();
+            packetProcessor.Write(writer, packet);
+            netManager.SendToAll(writer, deliveryMethod);
+        }
+    }
+
+    public void SendPacketToClient<T>(T packet, int id, DeliveryMethod deliveryMethod) where T : class, Packet, new()
+    {
+        if (netManager != null)
+        {
+            writer.Reset();
+            packetProcessor.Write(writer, packet);
+            netManager.SendToAll(writer, deliveryMethod);
+        }
     }
 
     // Update is called once per frame
