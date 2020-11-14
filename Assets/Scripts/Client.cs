@@ -73,7 +73,6 @@ namespace HackUMBC
             if (!ticking) return;
             Tick += 1;
 
-            Debug.Log("Sent Packets");
             var position = player.position;
             var packet = new ClientSendPositionPacket
             {
