@@ -1,12 +1,14 @@
 ﻿using LiteNetLib.Utils;
-using Packets;
-using System;
+using HackUMBC.Packets;
 
-public static class PacketRegistrar
+namespace HackUMBC
 {
-    public static void RegisterPackets(NetPacketProcessor processor)
+    public static class PacketRegistrar
     {
-        processor.SubscribeReusable<ClientSendPositionPacket>(ClientSendPositionPacket.OnReceive);
-        processor.SubscribeReusable<InitialTickPacket>(InitialTickPacket.OnReceive);
+        public static void RegisterPackets(NetPacketProcessor processor)
+        {
+            processor.SubscribeReusable<ClientSendPositionPacket>(ClientSendPositionPacket.OnReceive);
+            processor.SubscribeReusable<InitialTickPacket>(InitialTickPacket.OnReceive);
+        }
     }
 }

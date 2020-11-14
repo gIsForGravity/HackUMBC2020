@@ -1,16 +1,17 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public abstract class TickBehaviour : MonoBehaviour
+namespace HackUMBC
 {
-    void Awake()
+    public abstract class TickBehaviour : MonoBehaviour
     {
-        
-        OnAwake();
+        void Awake()
+        {
+
+            OnAwake();
+        }
+
+        protected virtual void OnAwake() { }
+
+        public abstract void Tick();
     }
-
-    protected virtual void OnAwake() { }
-
-    public abstract void Tick();
 }

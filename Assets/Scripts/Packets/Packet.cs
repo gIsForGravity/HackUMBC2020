@@ -1,4 +1,4 @@
-﻿namespace Packets
+﻿namespace HackUMBC.Packets
 {
     public interface Packet { }
 }

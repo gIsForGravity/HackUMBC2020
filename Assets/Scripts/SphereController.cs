@@ -1,29 +1,37 @@
 ﻿using UnityEngine;
 
-public class SphereController : MonoBehaviour
+namespace HackUMBC
 {
-    Rigidbody rb;
-    public float Force = 1f;
-
-    void Awake()
+    public class SphereController : TickBehaviour
     {
-        rb = GetComponent<Rigidbody>();
-    }
+        Rigidbody rb;
+        public float Force = 1f;
 
-    // Update is called once per frame
-    void Update()
-    {
-        Vector3 force = new Vector3();
-        if (Input.GetKey(KeyCode.W))
-            force += Vector3.forward * Force;
-        if (Input.GetKey(KeyCode.S))
-            force += Vector3.back * Force;
-        if (Input.GetKey(KeyCode.A))
-            force += Vector3.left * Force;
-        if (Input.GetKey(KeyCode.D))
-            force += Vector3.right * Force;
+        void Awake()
+        {
+            rb = GetComponent<Rigidbody>();
+        }
 
-        rb.AddForce(force);
-        //if (rb.velocity.magnitude)
+        // Update is called once per frame
+        void FixedUpdate()
+        {
+            Vector3 force = new Vector3();
+            if (Input.GetKey(KeyCode.W))
+                force += Vector3.forward * Force;
+            if (Input.GetKey(KeyCode.S))
+                force += Vector3.back * Force;
+            if (Input.GetKey(KeyCode.A))
+                force += Vector3.left * Force;
+            if (Input.GetKey(KeyCode.D))
+                force += Vector3.right * Force;
+
+            rb.AddForce(force);
+            //if (rb.velocity.magnitude)
+        }
+
+        public override void Tick()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

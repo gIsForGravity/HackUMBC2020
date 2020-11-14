@@ -1,11 +1,14 @@
 ﻿using System;
 
-public static class TickManager
+namespace HackUMBC
 {
-    private static event Action OnTick;
-
-    public static void Register(TickBehaviour tickBehaviour)
+    public static class TickManager
     {
-        OnTick += tickBehaviour.Tick;
+        private static event Action OnTick;
+
+        public static void Register(TickBehaviour tickBehaviour)
+        {
+            OnTick += tickBehaviour.Tick;
+        }
     }
 }

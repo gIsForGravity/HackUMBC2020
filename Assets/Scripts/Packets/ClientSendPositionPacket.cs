@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Packets
+namespace HackUMBC.Packets
 {
     public class ClientSendPositionPacket : Packet
     {

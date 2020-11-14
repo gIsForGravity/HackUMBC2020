@@ -1,81 +1,84 @@
 ﻿using LiteNetLib;
 using LiteNetLib.Utils;
-using Packets;
+using HackUMBC.Packets;
 using UnityEngine;
 
-public class Host : MonoBehaviour
+namespace HackUMBC
 {
-    private bool ticking = false;
-    public int Tick { get; private set; } = 0;
-
-    NetManager netManager;
-    NetPacketProcessor packetProcessor;
-    NetDataWriter writer;
-    EventBasedNetListener netListener;
-
-    private void Awake()
+    public class Host : MonoBehaviour
     {
-        Screen.SetResolution(1280, 720, false);
-    }
+        private bool ticking = false;
+        public int Tick { get; private set; } = 0;
 
-    public void StartHost()
-    {
-        Debug.LogError("starting host");
+        NetManager netManager;
+        NetPacketProcessor packetProcessor;
+        NetDataWriter writer;
+        EventBasedNetListener netListener;
 
-        netListener = new EventBasedNetListener();
-        netListener.PeerConnectedEvent += (client) =>
+        private void Awake()
         {
-            Debug.LogError($"Connected to client: {client}");
-            Debug.LogError("Sending InitialTickPacket");
-            SendPacket(new InitialTickPacket { tick = Tick }, DeliveryMethod.ReliableUnordered);
-        };
-
-        netListener.ConnectionRequestEvent += (request) =>
-        {
-            request.Accept();
-        };
-
-        netListener.NetworkReceiveEvent += (peer, reader, deliveryMethod) => 
-        {
-            packetProcessor.ReadAllPackets(reader);
-        };
-
-        packetProcessor = new NetPacketProcessor();
-        writer = new NetDataWriter();
-        PacketRegistrar.RegisterPackets(packetProcessor);
-
-        netManager = new NetManager(netListener);
-        netManager.Start(12345);
-
-        ticking = true;
-    }
-
-    public void SendPacket<T>(T packet, DeliveryMethod deliveryMethod) where T : class, Packet, new()
-    {
-        if (netManager != null)
-        {
-            writer.Reset();
-            packetProcessor.Write(writer, packet);
-            netManager.SendToAll(writer, deliveryMethod);
+            Screen.SetResolution(1280, 720, false);
         }
-    }
 
-    public void SendPacketToClient<T>(T packet, int id, DeliveryMethod deliveryMethod) where T : class, Packet, new()
-    {
-        if (netManager != null)
+        public void StartHost()
         {
-            writer.Reset();
-            packetProcessor.Write(writer, packet);
-            netManager.SendToAll(writer, deliveryMethod);
+            Debug.LogError("starting host");
+
+            netListener = new EventBasedNetListener();
+            netListener.PeerConnectedEvent += (client) =>
+            {
+                Debug.LogError($"Connected to client: {client}");
+                Debug.LogError("Sending InitialTickPacket");
+                SendPacket(new InitialTickPacket { tick = Tick }, DeliveryMethod.ReliableUnordered);
+            };
+
+            netListener.ConnectionRequestEvent += (request) =>
+            {
+                request.Accept();
+            };
+
+            netListener.NetworkReceiveEvent += (peer, reader, deliveryMethod) =>
+            {
+                packetProcessor.ReadAllPackets(reader);
+            };
+
+            packetProcessor = new NetPacketProcessor();
+            writer = new NetDataWriter();
+            PacketRegistrar.RegisterPackets(packetProcessor);
+
+            netManager = new NetManager(netListener);
+            netManager.Start(12345);
+
+            ticking = true;
         }
-    }
 
-    // Update is called once per frame
-    void FixedUpdate()
-    {
-        if (!ticking) return;
-        Tick += 1;
+        public void SendPacket<T>(T packet, DeliveryMethod deliveryMethod) where T : class, Packet, new()
+        {
+            if (netManager != null)
+            {
+                writer.Reset();
+                packetProcessor.Write(writer, packet);
+                netManager.SendToAll(writer, deliveryMethod);
+            }
+        }
 
-        netManager.PollEvents();
+        public void SendPacketToClient<T>(T packet, int id, DeliveryMethod deliveryMethod) where T : class, Packet, new()
+        {
+            if (netManager != null)
+            {
+                writer.Reset();
+                packetProcessor.Write(writer, packet);
+                netManager.SendToAll(writer, deliveryMethod);
+            }
+        }
+
+        // Update is called once per frame
+        void FixedUpdate()
+        {
+            if (!ticking) return;
+            Tick += 1;
+
+            netManager.PollEvents();
+        }
     }
 }
