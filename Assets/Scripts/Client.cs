@@ -1,25 +1,26 @@
 ﻿using LiteNetLib;
 using UnityEngine;
 
-public class NetworkManager : MonoBehaviour
+public class Client : MonoBehaviour
 {
     private bool ticking = false;
     public int Tick { get; private set; } = 0;
 
-    private bool host = false;
-
     NetManager netManager;
     EventBasedNetListener netListener;
 
-    public void StartHost()
+    private void Awake()
     {
-        host = true;
+        Screen.SetResolution(1280, 720, false);
     }
 
     public void StartClient()
     {
-        netManager.Start();
-        netManager.Connect("localhost", 9050, "key");
+        Debug.LogError("starting client");
+
+        netManager = new NetManager(netListener);
+        netManager.Connect("localhost", 12345, "");
+
         ticking = true;
     }
 
@@ -35,8 +36,6 @@ public class NetworkManager : MonoBehaviour
         {
             request.Accept();
         };
-
-        netManager = new NetManager(netListener);
     }
 
     // Update is called once per frame
