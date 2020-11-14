@@ -2,6 +2,8 @@
 using LiteNetLib.Utils;
 using HackUMBC.Packets;
 using UnityEngine;
+using System.Collections.Generic;
+using System;
 
 namespace HackUMBC
 {
@@ -15,9 +17,16 @@ namespace HackUMBC
         NetDataWriter writer;
         EventBasedNetListener netListener;
 
+        public Structs.Input LastReceivedInput { set { lastReceivedInput = value; } }
+
+        private Structs.Input lastReceivedInput;
+
         private void Awake()
         {
             Screen.SetResolution(1280, 720, false);
+            Physics.autoSimulation = false;
+
+            inputs.Add(0, new Structs.Input { Forward = false, Backward = false, Left = false, Right = false });
         }
 
         public void StartHost()
@@ -72,6 +81,10 @@ namespace HackUMBC
             }
         }
 
+        internal static Dictionary<int, Structs.Input> inputs = new Dictionary<int, Structs.Input>();
+
+        internal static int resimTick = 0;
+
         // Update is called once per frame
         void FixedUpdate()
         {
@@ -79,6 +92,25 @@ namespace HackUMBC
             Tick += 1;
 
             netManager.PollEvents();
+
+            if (resimTick < Tick - 1)
+                resim(resimTick, Tick);
+            else
+                resim(Tick, Tick);
+
+            resimTick = Tick;
+        }
+
+        private void resim(int firstTick, int lastTick)
+        {
+            for (int i = firstTick; i <= lastTick; i++)
+            {
+                if (!inputs.ContainsKey(i))
+                    inputs.Add(i, inputs[i - 1]);
+
+                TickManager.RunTick(inputs[i]);
+                Physics.Simulate(0.02f);
+            }
         }
     }
 }

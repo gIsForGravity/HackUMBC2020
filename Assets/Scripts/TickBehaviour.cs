@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using HackUMBC.Structs;
+using UnityEngine;
 
 namespace HackUMBC
 {
@@ -6,12 +7,12 @@ namespace HackUMBC
     {
         void Awake()
         {
-
+            TickManager.Register(this);
             OnAwake();
         }
 
         protected virtual void OnAwake() { }
 
-        public abstract void Tick();
+        public abstract void Tick(Structs.Input input);
     }
 }

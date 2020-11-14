@@ -15,7 +15,7 @@ namespace HackUMBC
         // Update is called once per frame
         void FixedUpdate()
         {
-            Vector3 force = new Vector3();
+            /*Vector3 force = new Vector3();
             if (Input.GetKey(KeyCode.W))
                 force += Vector3.forward * Force;
             if (Input.GetKey(KeyCode.S))
@@ -25,13 +25,22 @@ namespace HackUMBC
             if (Input.GetKey(KeyCode.D))
                 force += Vector3.right * Force;
 
-            rb.AddForce(force);
-            //if (rb.velocity.magnitude)
+            rb.AddForce(force);*/
         }
 
-        public override void Tick()
+        public override void Tick(Structs.Input input)
         {
-            throw new System.NotImplementedException();
+            Vector3 force = new Vector3();
+            if (input.Forward)
+                force += Vector3.forward * Force;
+            if (input.Backward)
+                force += Vector3.back * Force;
+            if (input.Left)
+                force += Vector3.left * Force;
+            if (input.Right)
+                force += Vector3.right * Force;
+
+            rb.AddForce(force);
         }
     }
 }

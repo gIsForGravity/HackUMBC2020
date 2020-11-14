@@ -1,10 +1,13 @@
-﻿using System;
+﻿using HackUMBC.Structs;
+using System;
 
 namespace HackUMBC
 {
-    public static class TickManager
+    internal static class TickManager
     {
-        private static event Action OnTick;
+        private static event Action<Input> OnTick;
+
+        public static void RunTick(Input input) => OnTick(input);
 
         public static void Register(TickBehaviour tickBehaviour)
         {

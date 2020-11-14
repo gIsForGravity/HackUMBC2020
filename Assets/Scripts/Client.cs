@@ -2,6 +2,7 @@
 using LiteNetLib.Utils;
 using HackUMBC.Packets;
 using UnityEngine;
+using System.Collections.Generic;
 
 namespace HackUMBC
 {
@@ -64,6 +65,10 @@ namespace HackUMBC
 
         public Transform player;
 
+        static internal int lastTickReceived = 0;
+
+        private Dictionary<int, Structs.Input> inputs = new Dictionary<int, Structs.Input>();
+
         // Update is called once per frame
         void FixedUpdate()
         {
@@ -73,7 +78,7 @@ namespace HackUMBC
             if (!ticking) return;
             Tick += 1;
 
-            var position = player.position;
+            /*var position = player.position;
             var packet = new ClientSendPositionPacket
             {
                 x = position.x,
@@ -81,7 +86,36 @@ namespace HackUMBC
                 z = position.z,
                 tick = Tick
             };
-            SendPacket(packet, DeliveryMethod.Unreliable);
+            SendPacket(packet, DeliveryMethod.Unreliable);*/
+
+            var input = new Structs.Input
+            {
+                Forward = Input.GetKey(KeyCode.W),
+                Left = Input.GetKey(KeyCode.A),
+                Backward = Input.GetKey(KeyCode.S),
+                Right = Input.GetKey(KeyCode.D)
+            };
+
+            inputs.Add(Tick, input);
+
+            TickManager.RunTick(input);
+
+            {
+                int repeats = Tick - lastTickReceived;
+
+                var inputPacket = new ClientInputPacket
+                {
+                    inputs = new Structs.Input[repeats],
+                    lastTick = Tick
+                };
+
+                for (int i = 0; i < repeats; i++)
+                {
+                    if (lastTickReceived + i != -1)
+                        inputPacket.inputs[i] = inputs[lastTickReceived + i];
+                    else continue;
+                }
+            }
         }
     }
 }
