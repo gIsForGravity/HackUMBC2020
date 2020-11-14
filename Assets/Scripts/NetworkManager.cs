@@ -1,6 +1,4 @@
 ﻿using LiteNetLib;
-using System.Net;
-using UnityEditor.PackageManager;
 using UnityEngine;
 
 public class NetworkManager : MonoBehaviour
