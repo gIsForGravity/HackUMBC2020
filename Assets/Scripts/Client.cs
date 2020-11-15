@@ -99,6 +99,7 @@ namespace HackUMBC
             inputs.Add(Tick, input);
 
             TickManager.RunTick(input);
+            Physics.Simulate(0.02f);
 
             {
                 int repeats = Tick - lastTickReceived;
@@ -111,11 +112,17 @@ namespace HackUMBC
 
                 for (int i = 0; i < repeats; i++)
                 {
-                    if (lastTickReceived + i != -1)
+                    if (inputs.ContainsKey(lastTickReceived + i))
                         inputPacket.inputs[i] = inputs[lastTickReceived + i];
                     else continue;
                 }
+
+                SendPacket(inputPacket, DeliveryMethod.Sequenced);
+
+                Debug.Log("Input Packet Sent");
             }
+
+            Debug.Log("lastTickReceived = " + lastTickReceived);
         }
     }
 }

@@ -12,6 +12,8 @@ namespace HackUMBC
         private bool ticking = false;
         public int Tick { get; private set; } = 0;
 
+        internal static Host singleton { get; private set; }
+
         NetManager netManager;
         NetPacketProcessor packetProcessor;
         NetDataWriter writer;
@@ -27,6 +29,8 @@ namespace HackUMBC
             Physics.autoSimulation = false;
 
             inputs.Add(0, new Structs.Input { Forward = false, Backward = false, Left = false, Right = false });
+
+            singleton = this;
         }
 
         public void StartHost()

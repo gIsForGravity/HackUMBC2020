@@ -24,11 +24,15 @@ namespace HackUMBC.Packets
             {
                 for (int i = start; i < packet.inputs.Length; i++)
                 {
-                    Host.inputs.Add(firstArrayTick + i, packet.inputs[i]);
+                    if (Host.inputs.ContainsKey(firstArrayTick + i + 1))
+                        Host.inputs.Remove(firstArrayTick + i + 1);
+                    Host.inputs.Add(firstArrayTick + i + 1, packet.inputs[i]);
                 }
                 Host.resimTick = lastArrivedTick + 1;
                 lastArrivedTick = packet.lastTick;
             }
+
+            Host.singleton.SendPacket(new HostAckInputPacket { tickReceived = lastArrivedTick }, LiteNetLib.DeliveryMethod.Sequenced);
         }
     }
 }
