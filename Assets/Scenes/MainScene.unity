@@ -1370,8 +1370,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: Client, Assembly-CSharp
+      - m_Target: {fileID: 2011429707}
+        m_TargetAssemblyTypeName: HackUMBC.Client, Assembly-CSharp
         m_MethodName: StartClient
         m_Mode: 1
         m_Arguments:
