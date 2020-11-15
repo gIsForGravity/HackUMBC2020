@@ -120,7 +120,7 @@ namespace HackUMBC
 
                 TickManager.RunTick(inputs[i]);
                 Physics.Simulate(0.02f);
-                CalculateState();
+                states.Add(i, CalculateState());
             }
         }
 
