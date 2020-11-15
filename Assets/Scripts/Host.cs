@@ -3,7 +3,6 @@ using LiteNetLib.Utils;
 using HackUMBC.Packets;
 using UnityEngine;
 using System.Collections.Generic;
-using Microsoft.Unity.VisualStudio.Editor;
 
 namespace HackUMBC
 {
