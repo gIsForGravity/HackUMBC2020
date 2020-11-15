@@ -11,8 +11,10 @@ namespace HackUMBC
         private bool ticking = false;
         public int Tick { get; private set; } = 0;
 
-        public Transform[] NonClientBalls;
+        [SerializeField] private Transform[] NonClientBalls = null;
         private Rigidbody[] NonClientBallRigidbodies;
+        [SerializeField] private Transform Player = null;
+        private Rigidbody PlayerRigidbody;
 
         internal static Host singleton { get; private set; }
 
@@ -36,6 +38,8 @@ namespace HackUMBC
             {
                 NonClientBallRigidbodies[i] = NonClientBalls[i].GetComponent<Rigidbody>();
             }
+
+            PlayerRigidbody = Player.GetComponent<Rigidbody>();
 
             inputs.Add(0, new Structs.Input { Forward = false, Backward = false, Left = false, Right = false });
             states.Add(0, CalculateState());
@@ -117,6 +121,8 @@ namespace HackUMBC
                 resim(Tick, Tick);
 
             resimTick = Tick;
+
+            SendPacket(HostGameStateOnTickPacket.FromGameState(states[Tick], Tick), DeliveryMethod.Sequenced);
         }
 
         private void resim(int firstTick, int lastTick)
@@ -154,8 +160,12 @@ namespace HackUMBC
             {
                 ballLocations = locations,
                 ballRotations = rotations,
+                playerLocation = Player.position,
+                playerRotation = Player.rotation,
                 ballVelocities = velocities,
-                ballAngularVelocities = angularVelocities
+                ballAngularVelocities = angularVelocities,
+                playerVelocity = PlayerRigidbody.velocity,
+                playerAngularVelocity = PlayerRigidbody.angularVelocity
             };
         }
 
@@ -169,6 +179,10 @@ namespace HackUMBC
                 NonClientBallRigidbodies[i].velocity = state.ballVelocities[i];
                 NonClientBallRigidbodies[i].angularVelocity = state.ballAngularVelocities[i];
             }
+            Player.position = state.playerLocation;
+            Player.rotation = state.playerRotation;
+            PlayerRigidbody.velocity = state.playerVelocity;
+            PlayerRigidbody.angularVelocity = state.playerAngularVelocity;
         }
     }
 }
