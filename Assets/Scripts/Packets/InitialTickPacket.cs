@@ -10,6 +10,7 @@ namespace HackUMBC.Packets
         {
             Debug.Log($"Tick packet received. Tick: {packet.tick}");
             Client.Tick = packet.tick;
+            Client.lastTickReceived = packet.tick;
             Client.ticking = true;
         }
     }
