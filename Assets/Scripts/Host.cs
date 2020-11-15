@@ -157,9 +157,7 @@ namespace HackUMBC
 
             for (int i = 0; i < NonClientBallRigidbodies.Length; i++)
             {
-                if (velocities[i] == null) Debug.LogError($"Velocity {i} null");
-                velocities[i] = NonClientBallRigidbodies[i].velocity;
-                if (angularVelocities[i] == null) Debug.LogError($"AngularVelocity {i} null");
+                velocities[i] = new Vector3(NonClientBallRigidbodies[i].velocity.x, NonClientBallRigidbodies[i].velocity.y, NonClientBallRigidbodies[i].velocity.z);
                 angularVelocities[i] = NonClientBallRigidbodies[i].angularVelocity;
             }
 

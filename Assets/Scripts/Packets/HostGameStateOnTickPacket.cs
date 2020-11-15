@@ -49,8 +49,7 @@ namespace HackUMBC
 
         public static void OnReceive(HostGameStateOnTickPacket packet)
         {
-            //Client.LoadState(ToGameState(packet), packet.tick);
-            Client.LoadState(packet, packet.tick);
+            Client.LoadState(ToGameState(packet), packet.tick);
         }
     }
 }

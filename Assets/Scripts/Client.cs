@@ -15,7 +15,7 @@ namespace HackUMBC
 
         private static Client singleton;
 
-        [SerializeField] private Transform[] NonClientBalls = null;
+        [SerializeField] private Transform[] NonClientBalls;
         private Rigidbody[] NonClientBallRigidbodies;
         [SerializeField] private Transform Player = null;
         private Rigidbody PlayerRigidbody;
@@ -29,6 +29,16 @@ namespace HackUMBC
         {
             Screen.SetResolution(1280, 720, false);
             singleton = this;
+
+            NonClientBallRigidbodies = new Rigidbody[NonClientBalls.Length];
+
+            for (int i = 0; i < NonClientBalls.Length; i++)
+            {
+                NonClientBallRigidbodies[i] = NonClientBalls[i].GetComponent<Rigidbody>();
+                if (NonClientBallRigidbodies[i] == null) Debug.LogError("Rigidbody null");
+            }
+
+            PlayerRigidbody = Player.GetComponent<Rigidbody>();
         }
 
         public void StartClient()
@@ -134,8 +144,7 @@ namespace HackUMBC
             Debug.Log("lastTickReceived = " + lastTickReceived);
         }
 
-        //public static void LoadState(GameState state, int tick)
-        public static void LoadState(HostGameStateOnTickPacket state, int tick)
+        public static void LoadState(GameState state, int tick)
         {
             for (int i = 0; i < state.ballLocations.Length; i++)
             {
