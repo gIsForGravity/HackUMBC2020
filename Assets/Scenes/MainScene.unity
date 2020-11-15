@@ -3360,6 +3360,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dd1c16e33b405da498b4fffeb6ae45b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  NonClientBalls:
+  - {fileID: 211644127}
+  - {fileID: 815946736}
+  - {fileID: 808922072}
+  - {fileID: 190162644}
+  - {fileID: 1415601440}
+  - {fileID: 1180604960}
 --- !u!4 &2011429706
 Transform:
   m_ObjectHideFlags: 0
