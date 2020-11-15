@@ -12,6 +12,7 @@ namespace HackUMBC
         public int Tick { get; private set; } = 0;
 
         public Transform[] NonClientBalls;
+        private Rigidbody[] NonClientBallRigidbodies;
 
         internal static Host singleton { get; private set; }
 
@@ -28,6 +29,13 @@ namespace HackUMBC
         {
             Screen.SetResolution(1280, 720, false);
             Physics.autoSimulation = false;
+
+            NonClientBallRigidbodies = new Rigidbody[NonClientBalls.Length];
+
+            for (int i = 0; i < NonClientBalls.Length; i++)
+            {
+                NonClientBallRigidbodies[i] = NonClientBalls[i].GetComponent<Rigidbody>();
+            }
 
             inputs.Add(0, new Structs.Input { Forward = false, Backward = false, Left = false, Right = false });
             states.Add(0, CalculateState());
@@ -120,6 +128,9 @@ namespace HackUMBC
 
                 TickManager.RunTick(inputs[i]);
                 Physics.Simulate(0.02f);
+
+                if (states.ContainsKey(i))
+                    states.Remove(i);
                 states.Add(i, CalculateState());
             }
         }
@@ -128,11 +139,23 @@ namespace HackUMBC
         {
             var locations = new Vector3[NonClientBalls.Length];
             var rotations = new Quaternion[NonClientBalls.Length];
+            var velocities = new Vector3[NonClientBallRigidbodies.Length];
+            var angularVelocities = new Vector3[NonClientBallRigidbodies.Length];
+
+            for (int i = 0; i < NonClientBalls.Length; i++)
+            {
+                locations[i] = NonClientBalls[i].position;
+                rotations[i] = NonClientBalls[i].rotation;
+                velocities[i] = NonClientBallRigidbodies[i].velocity;
+                angularVelocities[i] = NonClientBallRigidbodies[i].angularVelocity;
+            }
 
             return new Structs.GameState
             {
                 ballLocations = locations,
-                ballRotations = rotations
+                ballRotations = rotations,
+                ballVelocities = velocities,
+                ballAngularVelocities = angularVelocities
             };
         }
 
@@ -143,6 +166,8 @@ namespace HackUMBC
             {
                 NonClientBalls[i].position = state.ballLocations[i];
                 NonClientBalls[i].rotation = state.ballRotations[i];
+                NonClientBallRigidbodies[i].velocity = state.ballVelocities[i];
+                NonClientBallRigidbodies[i].angularVelocity = state.ballAngularVelocities[i];
             }
         }
     }

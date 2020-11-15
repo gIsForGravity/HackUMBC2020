@@ -6,5 +6,7 @@ namespace HackUMBC.Structs
     {
         public Vector3[] ballLocations;
         public Quaternion[] ballRotations;
+        public Vector3[] ballVelocities;
+        public Vector3[] ballAngularVelocities;
     }
 }
