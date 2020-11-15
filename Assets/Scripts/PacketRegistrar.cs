@@ -9,8 +9,6 @@ namespace HackUMBC
         public static void RegisterPackets(NetPacketProcessor processor)
         {
             processor.RegisterNestedType<Input>();
-            processor.RegisterNestedType<NetVector3>();
-            processor.RegisterNestedType<NetQuaternion>();
             processor.RegisterNestedType(Vector3Serializer.Serialize, Vector3Serializer.Deserialize);
             processor.RegisterNestedType(QuaternionSerializer.Serialize, QuaternionSerializer.Deserialize);
 
