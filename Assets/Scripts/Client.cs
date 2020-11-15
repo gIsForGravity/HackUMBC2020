@@ -41,8 +41,10 @@ namespace HackUMBC
             PlayerRigidbody = Player.GetComponent<Rigidbody>();
         }
 
-        public void StartClient()
+        public void StartClient(GameObject canvas)
         {
+            canvas.SetActive(false);
+
             Debug.LogError("starting client");
 
             netListener = new EventBasedNetListener();

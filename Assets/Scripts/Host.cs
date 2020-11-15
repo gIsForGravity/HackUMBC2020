@@ -48,8 +48,10 @@ namespace HackUMBC
             singleton = this;
         }
 
-        public void StartHost()
+        public void StartHost(GameObject canvas)
         {
+            canvas.SetActive(false);
+
             Debug.LogError("starting host");
 
             netListener = new EventBasedNetListener();
