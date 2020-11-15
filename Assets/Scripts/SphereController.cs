@@ -7,7 +7,7 @@ namespace HackUMBC
         Rigidbody rb;
         public float Force = 1f;
 
-        void Awake()
+        protected override void OnAwake()
         {
             rb = GetComponent<Rigidbody>();
         }
