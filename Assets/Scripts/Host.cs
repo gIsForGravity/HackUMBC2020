@@ -3,7 +3,7 @@ using LiteNetLib.Utils;
 using HackUMBC.Packets;
 using UnityEngine;
 using System.Collections.Generic;
-using System;
+using Microsoft.Unity.VisualStudio.Editor;
 
 namespace HackUMBC
 {
@@ -11,6 +11,8 @@ namespace HackUMBC
     {
         private bool ticking = false;
         public int Tick { get; private set; } = 0;
+
+        public Transform[] NonClientBalls;
 
         internal static Host singleton { get; private set; }
 
@@ -29,6 +31,7 @@ namespace HackUMBC
             Physics.autoSimulation = false;
 
             inputs.Add(0, new Structs.Input { Forward = false, Backward = false, Left = false, Right = false });
+            states.Add(0, CalculateState());
 
             singleton = this;
         }
@@ -86,6 +89,7 @@ namespace HackUMBC
         }
 
         internal static Dictionary<int, Structs.Input> inputs = new Dictionary<int, Structs.Input>();
+        internal static Dictionary<int, Structs.GameState> states = new Dictionary<int, Structs.GameState>();
 
         internal static int resimTick = 0;
 
@@ -98,7 +102,10 @@ namespace HackUMBC
             netManager.PollEvents();
 
             if (resimTick < Tick - 1)
+            {
+                ResetState(resimTick - 1);
                 resim(resimTick, Tick);
+            }
             else
                 resim(Tick, Tick);
 
@@ -114,6 +121,29 @@ namespace HackUMBC
 
                 TickManager.RunTick(inputs[i]);
                 Physics.Simulate(0.02f);
+                CalculateState();
+            }
+        }
+
+        private Structs.GameState CalculateState()
+        {
+            var locations = new Vector3[NonClientBalls.Length];
+            var rotations = new Quaternion[NonClientBalls.Length];
+
+            return new Structs.GameState
+            {
+                ballLocations = locations,
+                ballRotations = rotations
+            };
+        }
+
+        private void ResetState(int tick)
+        {
+            var state = states[tick];
+            for (int i = 0; i < state.ballLocations.Length; i++)
+            {
+                NonClientBalls[i].position = state.ballLocations[i];
+                NonClientBalls[i].rotation = state.ballRotations[i];
             }
         }
     }
