@@ -11,6 +11,8 @@ namespace HackUMBC
             processor.RegisterNestedType<Input>();
             processor.RegisterNestedType<NetVector3>();
             processor.RegisterNestedType<NetQuaternion>();
+            processor.RegisterNestedType(Vector3Serializer.Serialize, Vector3Serializer.Deserialize);
+            processor.RegisterNestedType(QuaternionSerializer.Serialize, QuaternionSerializer.Deserialize);
 
             processor.SubscribeReusable<ClientSendPositionPacket>(ClientSendPositionPacket.OnReceive);
             processor.SubscribeReusable<InitialTickPacket>(InitialTickPacket.OnReceive);

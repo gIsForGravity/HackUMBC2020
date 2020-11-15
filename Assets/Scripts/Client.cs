@@ -134,7 +134,8 @@ namespace HackUMBC
             Debug.Log("lastTickReceived = " + lastTickReceived);
         }
 
-        public static void LoadState(GameState state, int tick)
+        //public static void LoadState(GameState state, int tick)
+        public static void LoadState(HostGameStateOnTickPacket state, int tick)
         {
             for (int i = 0; i < state.ballLocations.Length; i++)
             {

@@ -37,6 +37,7 @@ namespace HackUMBC
             for (int i = 0; i < NonClientBalls.Length; i++)
             {
                 NonClientBallRigidbodies[i] = NonClientBalls[i].GetComponent<Rigidbody>();
+                if (NonClientBallRigidbodies[i] == null) Debug.LogError("Rigidbody null");
             }
 
             PlayerRigidbody = Player.GetComponent<Rigidbody>();
@@ -152,7 +153,13 @@ namespace HackUMBC
             {
                 locations[i] = NonClientBalls[i].position;
                 rotations[i] = NonClientBalls[i].rotation;
+            }
+
+            for (int i = 0; i < NonClientBallRigidbodies.Length; i++)
+            {
+                if (velocities[i] == null) Debug.LogError($"Velocity {i} null");
                 velocities[i] = NonClientBallRigidbodies[i].velocity;
+                if (angularVelocities[i] == null) Debug.LogError($"AngularVelocity {i} null");
                 angularVelocities[i] = NonClientBallRigidbodies[i].angularVelocity;
             }
 
