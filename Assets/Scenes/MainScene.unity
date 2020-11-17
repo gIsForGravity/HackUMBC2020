@@ -719,7 +719,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh21244
+  m_Name: pb_Mesh15732
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -3368,6 +3368,7 @@ MonoBehaviour:
   - {fileID: 1415601440}
   - {fileID: 1180604960}
   Player: {fileID: 1251184472}
+  maxTicks: 200
 --- !u!4 &2011429706
 Transform:
   m_ObjectHideFlags: 0
@@ -3402,6 +3403,7 @@ MonoBehaviour:
   - {fileID: 1415601440}
   - {fileID: 1180604960}
   Player: {fileID: 1251184472}
+  maxTicks: 200
   player: {fileID: 1251184472}
 --- !u!1 &2138873890
 GameObject:
