@@ -14,6 +14,7 @@ namespace HackUMBC
         [SerializeField] private Transform[] NonClientBalls = null;
         private Rigidbody[] NonClientBallRigidbodies;
         [SerializeField] private Transform Player = null;
+        [SerializeField] private int maxTicks = 5000;
         private Rigidbody PlayerRigidbody;
 
         internal static Host singleton { get; private set; }
@@ -77,6 +78,10 @@ namespace HackUMBC
             PacketRegistrar.RegisterPackets(packetProcessor);
 
             netManager = new NetManager(netListener);
+            netManager.SimulatePacketLoss = true;
+            netManager.SimulateLatency = true;
+            netManager.SimulationMaxLatency = 300;
+            netManager.SimulationPacketLossChance = 5;
             netManager.Start(12345);
 
             ticking = true;
@@ -105,6 +110,8 @@ namespace HackUMBC
         internal static Dictionary<int, Structs.Input> inputs = new Dictionary<int, Structs.Input>();
         internal static Dictionary<int, Structs.GameState> states = new Dictionary<int, Structs.GameState>();
 
+        private static int earliestTick = 0;
+
         internal static int resimTick = 0;
 
         // Update is called once per frame
@@ -125,6 +132,11 @@ namespace HackUMBC
 
             resimTick = Tick;
 
+            if (Tick - maxTicks > earliestTick)
+                deleteTicks(earliestTick, Tick - maxTicks);
+
+            earliestTick = Tick - maxTicks;
+
             SendPacket(HostGameStateOnTickPacket.FromGameState(states[Tick], Tick), DeliveryMethod.Sequenced);
         }
 
@@ -141,6 +153,17 @@ namespace HackUMBC
                 if (states.ContainsKey(i))
                     states.Remove(i);
                 states.Add(i, CalculateState());
+            }
+        }
+
+        private void deleteTicks(int firstTick, int lastTick)
+        {
+            for (int i = firstTick; firstTick <= lastTick; i++)
+            {
+                if (states.ContainsKey(i))
+                    states.Remove(i);
+                if (inputs.ContainsKey(i))
+                    inputs.Remove(i);
             }
         }
 

@@ -19,6 +19,7 @@ namespace HackUMBC
         private Rigidbody[] NonClientBallRigidbodies;
         [SerializeField] private Transform Player = null;
         private Rigidbody PlayerRigidbody;
+        [SerializeField] private int maxTicks;
 
         NetManager netManager;
         NetPacketProcessor packetProcessor;
@@ -68,6 +69,10 @@ namespace HackUMBC
             PacketRegistrar.RegisterPackets(packetProcessor);
 
             netManager = new NetManager(netListener);
+            netManager.SimulatePacketLoss = true;
+            netManager.SimulateLatency = true;
+            netManager.SimulationMaxLatency = 300;
+            netManager.SimulationPacketLossChance = 5;
             netManager.Start();
             netManager.Connect("localhost", 12345, "");
 
@@ -89,6 +94,8 @@ namespace HackUMBC
         static internal int lastTickReceived = 0;
 
         private static Dictionary<int, Structs.Input> inputs = new Dictionary<int, Structs.Input>();
+
+        private int earliestTick = 0;
 
         // Update is called once per frame
         void FixedUpdate()
@@ -122,6 +129,13 @@ namespace HackUMBC
             TickManager.RunTick(input);
             Physics.Simulate(0.02f);
 
+            if (Tick - maxTicks > earliestTick)
+                deleteTicks(earliestTick, Tick - maxTicks);
+
+            Debug.Log("inputs.Count: " + inputs.Count);
+
+            earliestTick = Tick - maxTicks;
+
             {
                 int repeats = Tick - lastTickReceived;
 
@@ -144,6 +158,14 @@ namespace HackUMBC
             }
 
             Debug.Log("lastTickReceived = " + lastTickReceived);
+        }
+
+        private void deleteTicks(int firstTick, int lastTick)
+        {
+            for (int i = firstTick; firstTick <= lastTick; i++)
+            {
+                inputs.Remove(i);
+            }
         }
 
         public static void LoadState(GameState state, int tick)
